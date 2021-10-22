@@ -1,3 +1,10 @@
+//// USE CORS ////
+const cors = require("cors");
+
+//// HIDE SENSITIVE INFORMATION ////
+// La ligne suivante ne doit être utilisée qu'une seule fois et au tout début du projet. De préférence dans index.js
+require("dotenv").config(); // Permet d'activer les variables d'environnement qui se trouvent dans le fichier `.env`
+
 //// start dependencies ////
 const express = require("express"); //toujours nécessaire: active "express"
 const formidable = require("express-formidable"); //toujours nécessaire: nous donne l'habilité de parser fields en syntax de JSON dans "body"
@@ -6,16 +13,17 @@ const mongoose = require("mongoose"); //toujours nécessaire: pour gérer access
 const cloudinary = require("cloudinary").v2;
 
 cloudinary.config({
-  cloud_name: "cordovez",
-  api_key: "588179619975318",
-  api_secret: "YDbny6rdboJVQwXHF8xsDIUvPgc",
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
 });
 
 const app = express(); // ici on re-nomme "express()"
 app.use(formidable()); // faire express utiliser formidable
+app.use(cors());
 
 // se connecter a la BDD en utilisant le nom que on veut le donner
-mongoose.connect("mongodb://localhost/Vinted");
+mongoose.connect(process.env.MONGODB_URI); // Vous pourrez vous connecter à votre base de données, sans pour autant préciser les identifiants dans le fichier index.js
 
 // import de routes:
 const userRoute = require("./routes/users");
@@ -30,6 +38,6 @@ app.all("*", (req, res) => {
 });
 
 // démarrer le serveur
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
   console.log("Server Started 🚀");
 });
