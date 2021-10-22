@@ -34,7 +34,9 @@ app.use(offerRoute);
 
 // en cas qu'il n'ya pas de route ...
 app.all("*", (req, res) => {
-  res.json("that page does not exist");
+  res.json(
+    "that page does not exist, but at least you are well connected to the server"
+  );
 });
 
 // démarrer le serveur
